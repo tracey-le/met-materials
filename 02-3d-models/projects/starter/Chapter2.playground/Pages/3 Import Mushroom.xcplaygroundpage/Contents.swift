@@ -14,9 +14,9 @@ PlaygroundPage.current.liveView = view
 let allocator = MTKMeshBufferAllocator(device: device)
 
 guard let assetURL = Bundle.main.url(
-    forResource: "train",
+    forResource: "mushroom",
     withExtension: "usdz") else {
-    fatalError()
+    fatalError("Could not find file.")
 }
 
 let vertexDescriptor = MTLVertexDescriptor()

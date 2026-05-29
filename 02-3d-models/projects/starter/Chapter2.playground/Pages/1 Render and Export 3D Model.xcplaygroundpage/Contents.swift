@@ -7,17 +7,34 @@ guard let device = MTLCreateSystemDefaultDevice() else {
 
 let frame = CGRect(x: 0, y: 0, width: 500, height: 500)
 let view = MTKView(frame: frame, device: device)
-view.clearColor
-  = MTLClearColor(red: 1, green: 1, blue: 0.8, alpha: 1)
+view.clearColor = MTLClearColor(red: 0.8, green: 0.8, blue: 1.0, alpha: 1)
 PlaygroundPage.current.liveView = view
 
 let allocator = MTKMeshBufferAllocator(device: device)
 let mdlMesh = MDLMesh(
-  sphereWithExtent: [0.75, 0.75, 0.75],
-  segments: [30, 30],
-  inwardNormals: false,
-  geometryType: .triangles,
-  allocator: allocator)
+    coneWithExtent: [1, 1, 1],
+    segments: [10, 10],
+    inwardNormals: false,
+    cap: true,
+    geometryType: .triangles,
+    allocator: allocator)
+
+// begin export code
+let asset = MDLAsset()
+asset.add(mdlMesh)
+
+let fileExtension = "usda"
+guard MDLAsset.canExportFileExtension(fileExtension) else {
+    fatalError("Can't export a \(fileExtension) format")
+}
+
+do {
+    let url = playgroundSharedDataDirectory.appendingPathComponent("generatedCone.\(fileExtension)")
+    try asset.export(to: url)
+} catch {
+    fatalError("Error \(error.localizedDescription)")
+}
+
 let mesh = try MTKMesh(mesh: mdlMesh, device: device)
 
 let commandQueue = device.makeCommandQueue()!
@@ -35,7 +52,7 @@ vertex float4 vertex_main(const VertexIn vertex_in [[stage_in]]) {
 }
 
 fragment float4 fragment_main() {
-  return float4(1, 0, 0, 1);
+    return float4(0.5, 0.4, 0.8, 1);
 }
 """
 
@@ -64,6 +81,7 @@ renderEncoder.setRenderPipelineState(pipelineState)
 
 renderEncoder.setVertexBuffer(
   mesh.vertexBuffers[0].buffer, offset: 0, index: 0)
+renderEncoder.setTriangleFillMode(.lines)
 
 guard let submesh = mesh.submeshes.first else {
   fatalError()

@@ -14,9 +14,9 @@ PlaygroundPage.current.liveView = view
 let allocator = MTKMeshBufferAllocator(device: device)
 
 guard let assetURL = Bundle.main.url(
-    forResource: "train",
-    withExtension: "usdz") else {
-    fatalError()
+    forResource: "Desk010",
+    withExtension: "usd") else {
+    fatalError("Could not find file.")
 }
 
 let vertexDescriptor = MTLVertexDescriptor()
@@ -48,7 +48,8 @@ struct VertexIn {
 
 vertex float4 vertex_main(const VertexIn vertex_in [[stage_in]]) {
   float4 position = vertex_in.position;
-  position.y -= 1.0;
+  position.x -= 0.4;
+  position.y -= 0.25;
   return position;
 }
 
@@ -77,7 +78,7 @@ guard let commandBuffer = commandQueue.makeCommandBuffer(),
   let renderEncoder = commandBuffer.makeRenderCommandEncoder(
     descriptor:  renderPassDescriptor)
 else { fatalError() }
-
+    
 renderEncoder.setRenderPipelineState(pipelineState)
 
 renderEncoder.setVertexBuffer(
