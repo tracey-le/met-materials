@@ -78,7 +78,7 @@ guard let commandBuffer = commandQueue.makeCommandBuffer(),
   let renderEncoder = commandBuffer.makeRenderCommandEncoder(
     descriptor:  renderPassDescriptor)
 else { fatalError() }
-    
+
 renderEncoder.setRenderPipelineState(pipelineState)
 
 renderEncoder.setVertexBuffer(
