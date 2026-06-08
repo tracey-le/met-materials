@@ -30,8 +30,16 @@ struct Quad {
         0, 1, 3
     ]
     
+    var colors: [simd_float3] = [
+        [1, 0.4, 0.8], // pink
+        [0.8, 0.4, 1], // purple
+        [1, 0.8, 0.2], // yellow
+        [1, 0.6, 0.4] // orange
+    ]
+    
     let vertexBuffer: MTLBuffer
     let indexBuffer: MTLBuffer
+    let colorBuffer: MTLBuffer
     
     init(device: MTLDevice, scale: Float = 1) {
         vertices = vertices.map {
@@ -53,5 +61,13 @@ struct Quad {
                 fatalError("Unable to create quad index buffer")
             }
         self.indexBuffer = indexBuffer
+        
+        guard let colorBuffer = device.makeBuffer(
+            bytes: &colors,
+            length: MemoryLayout<simd_float3>.stride * colors.count,
+            options: []) else {
+            fatalError("Unable to create quad color buffer")
+        }
+        self.colorBuffer = colorBuffer
     }
 }

@@ -3,18 +3,27 @@
 #include <metal_stdlib>
 using namespace metal;
 
-vertex float4 vertex_main(
-    constant packed_float3 *vertices [[buffer(0)]],
-    constant ushort *indices [[buffer(1)]],
-    constant float &timer [[buffer(11)]],
-    uint vertexID [[vertex_id]])
+struct VertexIn {
+    float4 position [[attribute(0)]];
+    float4 color [[attribute(1)]];
+};
+
+struct VertexOut {
+    float4 position [[position]];
+    float4 color;
+};
+
+vertex VertexOut vertex_main(
+    VertexIn in [[stage_in]],
+    constant float &timer [[buffer(11)]])
 {
-    ushort index = indices[vertexID];
-    float4 position = float4(vertices[index], 1);
-    position.y += timer;
-    return position;
+    VertexOut out {
+        .position = in.position,
+        .color = in.color
+    };
+    return out;
 }
 
-fragment float4 fragment_main() {
-    return float4(0.9, 0.4, 0.7, 1);
+fragment float4 fragment_main(VertexOut in [[stage_in]]) {
+    return in.color;
 }
