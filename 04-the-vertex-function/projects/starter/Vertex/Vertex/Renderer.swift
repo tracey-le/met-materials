@@ -98,7 +98,7 @@ extension Renderer: MTKViewDelegate {
             index: 1)
 
         renderEncoder.drawIndexedPrimitives(
-            type: .triangle,
+            type: .point,
             indexCount: quad.indices.count,
             indexType: .uint16,
             indexBuffer: quad.indexBuffer,
