@@ -45,7 +45,7 @@ struct Quad {
         vertices = vertices.map {
             Vertex(x: $0.x * scale, y: $0.y * scale, z: $0.z * scale)
         }
-        
+
         guard let vertexBuffer = device.makeBuffer(
             bytes: &vertices,
             length: MemoryLayout<Vertex>.stride * vertices.count,

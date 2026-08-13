@@ -17,6 +17,7 @@ class Renderer: NSObject {
     }()
     
     var timer: Float = 0
+    var count: Int = 50
 
     init(metalView: MTKView) {
     guard
@@ -40,7 +41,6 @@ class Renderer: NSObject {
     pipelineDescriptor.vertexFunction = vertexFunction
     pipelineDescriptor.fragmentFunction = fragmentFunction
     pipelineDescriptor.colorAttachments[0].pixelFormat = metalView.colorPixelFormat
-    pipelineDescriptor.vertexDescriptor = MTLVertexDescriptor.defaultLayout
 
     do {
       pipelineState =
@@ -77,32 +77,25 @@ extension Renderer: MTKViewDelegate {
             return
         }
 
-        timer += 0.05
-        var currentTime = sin(timer)
+        timer += 0.003
         renderEncoder.setVertexBytes(
-            &currentTime,
+            &timer,
             length: MemoryLayout<Float>.stride,
             index: 11)
+
+        renderEncoder.setVertexBytes(
+            &count,
+            length: MemoryLayout<Int>.stride * count,
+            index: 0)
 
         renderEncoder.setRenderPipelineState(pipelineState)
 
         // do drawing here
-        renderEncoder.setVertexBuffer(
-            quad.vertexBuffer,
-            offset: 0,
-            index: 0)
-        
-        renderEncoder.setVertexBuffer(
-            quad.colorBuffer,
-            offset: 0,
-            index: 1)
-
-        renderEncoder.drawIndexedPrimitives(
+  
+        renderEncoder.drawPrimitives(
             type: .point,
-            indexCount: quad.indices.count,
-            indexType: .uint16,
-            indexBuffer: quad.indexBuffer,
-            indexBufferOffset: 0)
+            vertexStart: 0,
+            vertexCount: 50)
 
         renderEncoder.endEncoding()
         guard let drawable = view.currentDrawable else {
